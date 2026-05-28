@@ -58,6 +58,7 @@ export class BookService {
       biddingActive: false,
 
       ...createBookDto,
+      borrowed: false,
     };
 
     this.books.push(newBook);
@@ -125,19 +126,20 @@ searchBook(title: string): Book[] {
     );
   }
 
-  borrowBook(id: number): Book {
-    const book = this.findOne(id);
+borrowBook(id: number) {
+  const book = this.books.find(book => book.id === id);
 
-    if (!book.available) {
-      throw new BadRequestException(
-        'Book already borrowed',
-      );
-    }
-
-    book.available = false;
-
-    return book;
+  if (!book) {
+    throw new NotFoundException('Book not found');
   }
+
+  book.borrowed = true;
+
+  return {
+    message: 'Book borrowed successfully',
+    book,
+  };
+}
 
   returnBook(id: number): Book {
     const book = this.findOne(id);

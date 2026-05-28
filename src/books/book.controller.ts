@@ -1,11 +1,11 @@
 
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 
-
+import { CreateBookSchema, CreateBookDto, } from './dto/create-book.dto';
 import { BookService } from './book.service';
-import { CreateBookDto } from './dto/create-book.dto';
+//import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
-import { PlaceBidDto } from './dto/place-bid.dto';
+import { PlaceBidDto, PlaceBidSchema } from './dto/place-bid.dto';
 
 @Controller('books')
 export class BookController {
@@ -21,10 +21,18 @@ export class BookController {
     return this.bookService.findOne(id);
   }
 
+
   @Post()
-  create(@Body() createBookDto: CreateBookDto) {
-    return this.bookService.create(createBookDto);
-  }
+create(@Body() body: unknown) {
+
+  const validatedData =
+    CreateBookSchema.parse(body);
+
+  return this.bookService.create(
+    validatedData,
+  );
+}
+
 
   @Patch(':id')
   update(
@@ -85,18 +93,21 @@ export class BookController {
   }
 
   @Post(':id/bid')
-  placeBid(
-    @Param('id', ParseIntPipe)
-    id: number,
+placeBid(
+  @Param('id', ParseIntPipe)
+  id: number,
 
-    @Body()
-    placeBidDto: PlaceBidDto,
-  ) {
-    return this.bookService.placeBid(
-      id,
-      placeBidDto,
-    );
-  }
+  @Body() body: unknown,
+) {
+
+  const validatedData =
+    PlaceBidSchema.parse(body);
+
+  return this.bookService.placeBid(
+    id,
+    validatedData,
+  );
+}
 
   @Patch(':id/end-bid')
   endBidding(
