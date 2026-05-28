@@ -92,13 +92,28 @@ export class BookService {
     return 'Book deleted successfully';
   }
 
-  searchBook(title: string): Book[] {
-    return this.books.filter(book =>
+//   searchBook(title: string): Book[] {
+//     return this.books.filter(book =>
+//       book.title
+//         .toLowerCase()
+//         .includes(title.toLowerCase()),
+//     );
+//   }
+searchBook(title: string): Book[] {
+  return this.books.filter(
+    book =>
       book.title
-        .toLowerCase()
+        ?.toLowerCase()
+        .includes(title.toLowerCase()) ||
+      book.author
+        ?.toLowerCase()
+        .includes(title.toLowerCase()) ||
+      book.category
+        ?.toLowerCase()
         .includes(title.toLowerCase()),
-    );
-  }
+  );
+}
+
 
   filterByCategory(
     category: string,
