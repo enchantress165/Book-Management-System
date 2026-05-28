@@ -9,7 +9,7 @@ import {
 import { Book } from './interfaces/book.interface';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
-
+import { PlaceBidDto } from './dto/place-bid.dto';
 
 @Injectable()
 export class BookService {
@@ -136,6 +136,63 @@ export class BookService {
     book.available = true;
 
     return book;
+  }
+
+  startBidding(id: number): Book {
+    const book = this.findOne(id);
+
+    book.biddingActive = true;
+
+    return book;
+  }
+
+  placeBid(
+    id: number,
+    placeBidDto: PlaceBidDto,
+  ): Book {
+    const book = this.findOne(id);
+
+    if (!book.biddingActive) {
+      throw new BadRequestException(
+        'Bidding not active',
+      );
+    }
+
+    if (
+      placeBidDto.amount <=
+      book.currentBid
+    ) {
+      throw new BadRequestException(
+        'Bid amount must be higher',
+      );
+    }
+
+    book.currentBid =
+      placeBidDto.amount;
+
+    book.highestBidder =
+      placeBidDto.bidderName;
+
+    return book;
+  }
+
+  endBidding(id: number): Book {
+    const book = this.findOne(id);
+
+    book.biddingActive = false;
+
+    return book;
+  }
+
+  getHighestBid(id: number) {
+    const book = this.findOne(id);
+
+    return {
+      title: book.title,
+      currentBid: book.currentBid,
+      highestBidder:
+        book.highestBidder,
+    };
   }
 
 

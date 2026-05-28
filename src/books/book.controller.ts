@@ -5,7 +5,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from 
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
-
+import { PlaceBidDto } from './dto/place-bid.dto';
 
 @Controller('books')
 export class BookController {
@@ -74,41 +74,46 @@ export class BookController {
     return this.bookService.returnBook(id);
   }
 
+  @Patch(':id/start-bid')
+  startBidding(
+    @Param('id', ParseIntPipe)
+    id: number,
+  ) {
+    return this.bookService.startBidding(
+      id,
+    );
+  }
+
+  @Post(':id/bid')
+  placeBid(
+    @Param('id', ParseIntPipe)
+    id: number,
+
+    @Body()
+    placeBidDto: PlaceBidDto,
+  ) {
+    return this.bookService.placeBid(
+      id,
+      placeBidDto,
+    );
+  }
+
+  @Patch(':id/end-bid')
+  endBidding(
+    @Param('id', ParseIntPipe)
+    id: number,
+  ) {
+    return this.bookService.endBidding(id);
+  }
+
+  @Get(':id/highest-bid')
+  getHighestBid(
+    @Param('id', ParseIntPipe)
+    id: number,
+  ) {
+    return this.bookService.getHighestBid(
+      id,
+    );
+  }
 
 }
-
-
-
-// import {Controller, Get, Post, Patch, Delete, Param, Body,} from '@nestjs/common';
-
-// @Controller('books')
-// export class BookController {
-
-//   @Get()
-//   findAll() {
-//     return 'Get all books';
-//   }
-
-//   @Get(':id')
-//   findOne(@Param('id') id: string) {
-//     return `Get book with id ${id}`;
-//   }
-
-//   @Post()
-//   create(@Body() body: any) {
-//     return body;
-//   }
-
-//   @Patch(':id')
-//   update(
-//     @Param('id') id: string,
-//     @Body() body: any,
-//   ) {
-//     return `Update book ${id}`;
-//   }
-
-//   @Delete(':id')
-//   remove(@Param('id') id: string) {
-//     return `Delete book ${id}`;
-//   }
-// }
