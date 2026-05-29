@@ -141,19 +141,38 @@ borrowBook(id: number) {
   };
 }
 
-  returnBook(id: number): Book {
-    const book = this.findOne(id);
+  // returnBook(id: number): Book {
+  //   const book = this.findOne(id);
 
-    if (book.available) {
-      throw new BadRequestException(
-        'Book already returned',
-      );
-    }
+  //   if (book.available) {
+  //     throw new BadRequestException(
+  //       'Book already returned',
+  //     );
+  //   }
 
-    book.available = true;
+  //   book.available = true;
 
-    return book;
+  //   return book;
+  // }
+
+returnBook(id: number) {
+  const book = this.books.find(book => book.id === id);
+
+  if (!book) {
+    throw new NotFoundException('Book not found');
   }
+
+  if (!book.borrowed) {
+    throw new BadRequestException('Book already returned');
+  }
+
+  book.borrowed = false;
+
+  return {
+    message: 'Book returned successfully',
+    book,
+  };
+}
 
   startBidding(id: number): Book {
     const book = this.findOne(id);
