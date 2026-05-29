@@ -5,6 +5,8 @@ export interface Book {
     category:string;
     available:boolean;
 
+    borrowed : boolean;
+
     currentBid : number;
     highestBidder? : string | null;
     biddingActive? : boolean;
